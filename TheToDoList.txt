@@ -1,0 +1,13 @@
+1) How to save and store the data
+
+2) Play some games for training
+
+3) How to retrieve the data
+
+4) How will it play the game
+
+5) Edit the recurrent neural network code found on github
+
+6) Save weight
+
+7) Validation and Testing a lot, once we get something that works
