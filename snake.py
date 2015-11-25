@@ -14,6 +14,15 @@ def die(screen, score):
 	pygame.time.wait(2000)
 	sys.exit(0)
 
+def wait():
+	while True:
+		for event in events:
+			if event.type == QUIT:
+				pygame.quit()
+				sys.exit()
+			if event.type == KEYDOWN and (event.key == K_UP or event.key == K_DOWN  or event.key == K_LEFT  or event.key == K_RIGHT):
+				return 
+
 humanTrain = True
 xs = [290, 290, 290, 290, 290]
 
@@ -35,12 +44,14 @@ img.fill((255, 0, 0))
 f = pygame.font.SysFont('Arial', 20)
 clock = pygame.time.Clock()
 while True:
+	events = pygame.event.get()
+	print events
 	if humanTrain == True:
-		wait = input();
-	else:
-		clock.tick(10)
+		wait()
+	clock.tick(10)
 	#Quit
-	for e in pygame.event.get():
+	
+	for e in events:
 		if e.type == QUIT:
 			sys.exit(0)
 		#Controls
@@ -80,7 +91,8 @@ while True:
 	s.blit(t, (10, 10))
 	pygame.display.update()
 				
-				
+
+
 		
 
 
