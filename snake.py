@@ -33,9 +33,10 @@ def die(screen, score):
 
 	#write data to file
 	if humanTrain:
-		out = open(date.__str__()[:19], 'w')
+		out = open(date.__str__()[:19] + "(" + str(startSquares) + " - " + str(score + 5) + ")" , 'w')
 		for x in range(0 , lastValidFrame + 1):
 			out.write(frameData[x].__str__() + "\n")
+		out.close()
 
 	sys.exit(0)
 
@@ -60,9 +61,10 @@ def interpretFromFile(filename):
 
 #Config
 humanTrain = True #Pause between Frames and Output all Frames?
+trainPause = True
 startSquares = 5 #Starting Snake Length
-loadData = True
-dataSrc = "2015-11-27 13:18:26"
+loadData = False
+dataSrc = "2015-11-27 14:11:08(5 - 13)"
 
 
 #Training Setup
@@ -86,17 +88,21 @@ startSquaresY = [290, 270, 250, 230, 210, 190, 170, 150, 130, 110,  90,  70,  50
 if startSquares > 104:
 	startSquares = 104
 if loadData:
+	#Load Previous Play
 	xs = loadedData[-1].xs
 	ys = loadedData[-1].ys
 	dirs = loadedData[-1].dirs
-	score = loadedData[-1].sLength
+	score = loadedData[-1].sLength - 5
 	applepos = loadedData[-1].applepos
+	startSquares = loadedData[-1].sLength
 else:
+	#Standard Game Start
 	xs = list(startSquaresX[0:startSquares])
 	ys = list(startSquaresY[0:startSquares])
 	dirs = 0 
 	score = 0
 	applepos = (random.randint(0, 590), random.randint(0, 590))
+initScore = score
 pygame.init()
 s=pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Snake')
@@ -108,7 +114,7 @@ f = pygame.font.SysFont('Arial', 20)
 clock = pygame.time.Clock()
 
 while True:
-	if humanTrain:
+	if humanTrain and trainPause:
 		wait()
 	events = pygame.event.get()
 	for e in events:
@@ -121,7 +127,7 @@ while True:
 			elif e.key == K_LEFT and dirs != 1:dirs = 3
 			elif e.key == K_RIGHT and dirs != 3:dirs = 1
 			elif e.key == K_SPACE: 
-				humanTrain = not humanTrain
+				trainPause = not trainPause
 	i = len(xs)-1
 	while i >= 2:
 		if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):
@@ -156,9 +162,5 @@ while True:
 	frameData.append(SnakeFrame(xs,ys, applepos, dirs))
 	totalFrames += 1
 
-				
-
-
-		
 
 
