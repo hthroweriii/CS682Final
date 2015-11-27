@@ -1,4 +1,4 @@
-AI Directions
+#AI Directions
 
 Use arrow keys to move.
 
@@ -10,8 +10,8 @@ AI. IT IS LIKE A CHILD, AND WE HAVE TO BE THE BEST ROLE MODELS WE CAN BE. WITH T
 IF YOU THINK A PREVIOUS PLAYTHROUGH COULD HAVE BEEN DONE BETTER, JUST DELETE IT FROM THE
 FOLDER. NO SLOPPY PLAYTHROUGHS. :)
 
-Quick How tos:
-  Save Current Play Data:
+##Quick How tos:
+  ####Save Current Play Data:
     Set humanTrain = True
     Once you die, the playthough is saved to a file with the name { Date Time (snake length) }
 
@@ -19,24 +19,24 @@ Quick How tos:
     This means that the file will not save the information of where the snake collides into
     a wall or itself.
 
-  Loading Past Plays:
+  ####Loading Past Plays:
     Set loadData = true
     Set dataSrc = "Your file name"  
     *** If Human Train mode is on... then this will save the snakeframe queue to a DIFFERENT file, 
     but containing ONLY the data from the current play.
 
-  Interpret Save File Data
+  ####Interpret Save File Data
     Each line of the file is one frame of the playthrough. The format looks like:
     (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position)
 
-  Play Game Normally:
+  ####Play Game Normally:
     Set humanTrain = False
 
-  Change Snake Starting Length:
+  ####Change Snake Starting Length:
     Set startSquares = (Length Desired)
 
 
-About Human Train Mode:
+##About Human Train Mode:
   How to activate Human Train Mode? Set humanTrain = true
 
   Human Train Mode will record the snake and the apples position, the direction
@@ -52,5 +52,5 @@ About Human Train Mode:
   Each line of the file is one frame of the playthrough. The format looks like:
   (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position)
 
-Other Controls:
+##Other Controls:
   Spacebar : Toggle pause mode or not
