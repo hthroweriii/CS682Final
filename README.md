@@ -50,7 +50,7 @@ FOLDER. NO SLOPPY PLAYTHROUGHS. :)
 
   File Format:
   Each line of the file is one frame of the playthrough. The format looks like:
-  ''' (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position
+  > (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position)
 
 ##Other Controls:
   Spacebar : Toggle pause mode or not
