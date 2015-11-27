@@ -11,7 +11,7 @@ IF YOU THINK A PREVIOUS PLAYTHROUGH COULD HAVE BEEN DONE BETTER, JUST DELETE IT 
 FOLDER. NO SLOPPY PLAYTHROUGHS. :)
 
 ##Quick How tos:
-  ####Save Current Play Data:
+####Save Current Play Data:
     Set humanTrain = True
     Once you die, the playthough is saved to a file with the name { Date Time (snake length) }
 
@@ -19,20 +19,20 @@ FOLDER. NO SLOPPY PLAYTHROUGHS. :)
     This means that the file will not save the information of where the snake collides into
     a wall or itself.
 
-  ####Loading Past Plays:
+####Loading Past Plays:
     Set loadData = true
     Set dataSrc = "Your file name"  
     *** If Human Train mode is on... then this will save the snakeframe queue to a DIFFERENT file, 
     but containing ONLY the data from the current play.
 
-  ####Interpret Save File Data
+####Interpret Save File Data
     Each line of the file is one frame of the playthrough. The format looks like:
     (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position)
 
-  ####Play Game Normally:
+####Play Game Normally:
     Set humanTrain = False
 
-  ####Change Snake Starting Length:
+####Change Snake Starting Length:
     Set startSquares = (Length Desired)
 
 
@@ -44,13 +44,13 @@ FOLDER. NO SLOPPY PLAYTHROUGHS. :)
   in an object called SnakeFrame. There is a list of SnakeFrames that is saved to a file
   when the snake dies.
  
-  ***The file only saves up until the last apple is gotten *** 
+  *** The file only saves up until the last apple is gotten *** 
   This means that the file will not save the information of where the snake collides into
   a wall or itself.
 
   File Format:
   Each line of the file is one frame of the playthrough. The format looks like:
-  (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position)
+  *** (Snake X position) (snake Y position) (Apple Position) (Snake Length) (Snake Position) ***
 
 ##Other Controls:
   Spacebar : Toggle pause mode or not
