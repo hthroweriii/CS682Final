@@ -21,15 +21,20 @@ FOLDER. NO SLOPPY PLAYTHROUGHS. :)
 ####Save Data For Training:
     python snake.py -train -pause
 
+    *** Use -saveas: to specify the name of the save file
+    
     ***The file only saves up until the last apple is gotten *** 
     This means that the file will not save the information of where the snake collides into
     a wall or itself.
 
 ####Loading Past Plays:
-    python snake.py -train -pause -dataSrc:(filename)
+    python snake.py -dataSrc:(filename)
 
-    *** If Human Train mode is on... then this will save the snakeframe queue to a DIFFERENT file, 
+    *** If Human Train mode is on (-train)... then this will start the game from where the 
+    loaded game left off. Also it will save the snakeframe queue to a DIFFERENT file, 
     but containing ONLY the data from the current play.
+
+    *** If Replay(-replay) is on, this will give a replay of the game
 
 ####Interpret Save File Data
     Each line of the file is one frame of the playthrough. The format looks like:
@@ -42,7 +47,7 @@ FOLDER. NO SLOPPY PLAYTHROUGHS. :)
     python snake.py -startsquares:(Length Desired)
 
 ##About Human Train Mode:
-  How to activate Human Train Mode? Set humanTrain = true
+  How to activate Human Train Mode? -train (-pause is optional but recommended)
 
   Human Train Mode will record the snake and the apples position, the direction
   of the snake and the the length of the snake for each frame. This will be placed
