@@ -25,6 +25,7 @@ class GameData:
 		self.playData = False
 		self.dataSrc = ""
 		self.customFileName = ""
+		self.trainData = []
 
 def collide(x1, x2, y1, y2, w1, w2, h1, h2):
 	if x1+w1>x2 and x1<x2+w2 and y1+h1>y2 and y1<y2+h2:
@@ -39,8 +40,9 @@ def wait():
 		if pygame.event.peek(KEYUP):
 			return 
 
-def interpretFromFile(filename):
+def interpretFromFile(filename, trainData):
 	frames = list()
+	outArray = []
 	data = open(filename, 'r')
 	for line in data:
 		m = re.match('(\[.+?\]) (\[.+?\]) (\[.+?\]) (.+?) (.+?)', line)
@@ -50,9 +52,20 @@ def interpretFromFile(filename):
 		apos  = map(int, (m.group(3)).replace(",","").replace("[","").replace("]","").split() )
 		direction = int(m.group(5)) 
 		frames.append(SnakeFrame(xList, yList, apos, direction))
-	data.close()
-	return frames
+		tempArray = []
+		tempArray += apos + [direction] + xList
+		for x in range(0,50-len(xList)):
+			tempArray += [0]
+		tempArray += xList
+		for x in range(0,50-len(yList)):
+			tempArray += [0]
 
+		trainData.append(tempArray)
+	data.close()
+	#for x in frames:
+	#	tempArray = tempArray + [x]
+	#print tempArray[0]
+	return frames
 #Setup command line arguments
 def setupCLA( gd ):
 	for x in sys.argv:
@@ -108,7 +121,7 @@ def fileExits(name):
 
 def replayRoutine( gd ):
 	print "Replay Beginning"
-	gd.loadedData = interpretFromFile(gd.dataSrc)
+	gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData)
 	s=gd.screen
 	appleimage = gd.appleimage
 	appleimage.fill((0, 255, 0))
@@ -155,7 +168,8 @@ def regularGameRoutine( gd):
 	
 	#Training Setup
 	if gd.loadData:
-		gd.loadedData = interpretFromFile(gd.dataSrc)
+		gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData)
+		print gd.trainData
 	frameData = list()
 	lastValidFrame = 0
 	totalFrames = 0
@@ -212,6 +226,7 @@ def regularGameRoutine( gd):
 		if gd.humanTrain and gd.trainPause:
 			wait()
 		events = pygame.event.get()
+		frameData.append(SnakeFrame(xs,ys, applepos, dirs))
 		for e in events:
 			if e.type == QUIT:
 				sys.exit(0)
@@ -254,7 +269,6 @@ def regularGameRoutine( gd):
 		t=f.render(str(score), True, (0, 0, 0))
 		s.blit(t, (10, 10))
 		pygame.display.update()
-		frameData.append(SnakeFrame(xs,ys, applepos, dirs))
 		totalFrames += 1
 
 def main():
