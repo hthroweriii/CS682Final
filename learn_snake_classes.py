@@ -129,7 +129,10 @@ class MLP(object):
         #return 1
 
 def train(trainData, targetOutput, playSnake, criterion):
-    for i in range(0,5000):
+    print trainData.shape[0]
+    print trainData
+    for i in range(0,20):
+        print i
         for j in range(trainData.shape[0]):
             prediction = playSnake.forward(trainData[j])
             err = criterion.updateOutput(prediction, targetOutput[j])
@@ -138,5 +141,5 @@ def train(trainData, targetOutput, playSnake, criterion):
 
             for k,m in enumerate(playSnake.modules):
                 if m.gradWeight != ():
-                    m.W -= 1e-3 * grads[k][0]
-                    m.b -= 1e-3 * grads[k][1]
+                    m.W -= 1e-4 * grads[k][0]
+                    m.b -= 1e-4 * grads[k][1]

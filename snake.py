@@ -2,7 +2,6 @@ import pygame, random, sys, re
 import os
 from datetime import datetime
 from pygame.locals import *
-from learn_snake import *
 from learn_snake_classes import *
 import numpy as np
 
@@ -65,11 +64,13 @@ def interpretFromFile(filename, trainData, targetOutput):
 			tempArray += [0]
 		trainData.append(tempArray)
 		targetOutput.append(direction)
+	#print trainData
+
 	data.close()
 	#for x in frames:
 	#	tempArray = tempArray + [x]
 	#print tempArray[0]
-	return frames
+	return (frames, trainData, targetOutput)
 #Setup command line arguments
 def setupCLA( gd ):
 	for x in sys.argv:
@@ -125,7 +126,7 @@ def fileExits(name):
 
 def replayRoutine( gd ):
 	print "Replay Beginning"
-	gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
+	(gd.loadedData, gd.trainData, gd.trainTargetOutput) = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
 	s=gd.screen
 	appleimage = gd.appleimage
 	appleimage.fill((0, 255, 0))
@@ -147,6 +148,7 @@ def replayRoutine( gd ):
 def regularGameRoutine( gd):
 	def die(screen, score):
 		#Declare Variables
+		print score
 		f=pygame.font.SysFont('Arial', 30)
 		t=f.render('Your score was: '+str(score), True, (0, 0, 0))
 		date = datetime.now()
@@ -172,7 +174,7 @@ def regularGameRoutine( gd):
 	
 	#Training Setup
 	if gd.loadData:
-		gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
+		(gd.loadedData, gd.trainData, gd.trainTargetOutput) = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
 	frameData = list()
 	lastValidFrame = 0
 	totalFrames = 0
@@ -294,8 +296,6 @@ def aiGameRoutine( gd , ps):
 	
 	#Training Setup
 	
-	if gd.loadData:
-		gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
 
 	applepos = list()
 	startSquaresX = [290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310,\
@@ -408,6 +408,8 @@ def main():
 			playSnake.add(Linear(1000,4))
 			playSnake.add(Softmax(4))
 			criterion = NLLLoss(103)
+			if gameData.loadData:
+				(gameData.loadedData, gameData.trainData, gameData.trainTargetOutput) = interpretFromFile(gameData.dataSrc, gameData.trainData, gameData.trainTargetOutput)
 			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
 			aiGameRoutine( gameData, playSnake)
 		else:
