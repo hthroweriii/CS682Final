@@ -353,16 +353,6 @@ def aiGameRoutine( gd , ps):
 		if abs(dirs - prevDirs) == 2:
 			dirs = prevDirs
 
-		frameData.append(SnakeFrame(xs,ys, applepos, dirs))
-		state = []
-		state += applepos + [dirs] + xs
-		for x in range(0,50-len(xs)):
-			state += [0]
-		state += xs
-		for x in range(0,50-len(ys)):
-			state += [0]
-		dirs = ps.predict(state)
-
 		i = len(xs)-1
 		while i >= 2:
 			if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):
@@ -394,7 +384,6 @@ def aiGameRoutine( gd , ps):
 		t=f.render(str(score), True, (0, 0, 0))
 		s.blit(t, (10, 10))
 		pygame.display.update()
-		totalFrames += 1
 
 
 
@@ -425,8 +414,6 @@ def main():
 			if gameData.loadData:
 				(gameData.loadedData, gameData.trainData, gameData.trainTargetOutput) = interpretFromFile(gameData.dataSrc, gameData.trainData, gameData.trainTargetOutput)
 			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
-			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
-			playSnake.train(gameData.trainData[:-1], gameData.trainTargetOutput[1:] ,  playSnake, criterion)
 			aiGameRoutine( gameData, playSnake)
 		else:
 			regularGameRoutine( gameData )

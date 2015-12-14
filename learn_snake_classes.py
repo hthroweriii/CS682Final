@@ -131,7 +131,7 @@ class MLP(object):
 def train(trainData, targetOutput, playSnake, criterion):
     print trainData.shape[0]
     print trainData
-    for i in range(0,20):
+    for i in range(0,2):
         print i
         for j in range(trainData.shape[0]):
             prediction = playSnake.forward(trainData[j])
