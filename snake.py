@@ -2,7 +2,11 @@ import pygame, random, sys, re
 import os
 from datetime import datetime
 from pygame.locals import *
+<<<<<<< 6282c7c8f7cbe46858e1bd92c4322798bcac0b28
 import learn_snake import *
+=======
+import learn_snake as ls
+>>>>>>> begin trainning
 
 
 class SnakeFrame:
@@ -406,6 +410,7 @@ def main():
 			criterion = NLLLoss(103)
 			playSnake.train(gameData.trainData[:-1], gameData.trainTargetOutput[1:] ,  playSnake, criterion)
 			aiGameRoutine( gameData, playSnake)
+
 		else:
 			regularGameRoutine( gameData )
 
