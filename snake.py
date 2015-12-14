@@ -2,8 +2,12 @@ import pygame, random, sys, re
 import os
 from datetime import datetime
 from pygame.locals import *
+<<<<<<< HEAD
 from learn_snake_classes import *
 import numpy as np
+=======
+import learn_snake import *
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 
 
 class SnakeFrame:
@@ -172,6 +176,7 @@ def regularGameRoutine( gd):
 	#Training Setup
 	if gd.loadData:
 		gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
+		print gd.trainData
 	frameData = list()
 	lastValidFrame = 0
 	totalFrames = 0
@@ -293,9 +298,13 @@ def aiGameRoutine( gd , ps):
 	
 	#Training Setup
 	
+<<<<<<< HEAD
 	if gd.loadData:
 		gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
 
+=======
+	
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 	applepos = list()
 	startSquaresX = [290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310,\
 	330, 330, 330, 330, 330, 330, 330, 330, 330, 330, 330, 330, 330, 350, 350, 350, 350, 350, 350, 350, 350, 350, 350, 350, 350, 350,\
@@ -338,6 +347,7 @@ def aiGameRoutine( gd , ps):
 		if gd.humanTrain and gd.trainPause:
 			wait()
 		events = pygame.event.get()
+<<<<<<< HEAD
 		state = []
 		state += applepos 
 		state += [dirs] 
@@ -351,6 +361,18 @@ def aiGameRoutine( gd , ps):
 		dirs = ps.predict(np.asarray(state))
 		if abs(dirs - prevDirs) == 2:
 			dirs = prevDirs
+=======
+		frameData.append(SnakeFrame(xs,ys, applepos, dirs))
+		state = []
+		state += applepos + [dirs] + xs
+		for x in range(0,50-len(xs)):
+			state += [0]
+		state += xs
+		for x in range(0,50-len(ys)):
+			state += [0]
+		dirs = ps.predict(state)
+
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 		i = len(xs)-1
 		while i >= 2:
 			if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):
@@ -362,6 +384,10 @@ def aiGameRoutine( gd , ps):
 			xs.append(700)
 			ys.append(700)
 			applepos=(random.randint(0,590),random.randint(0,590))
+<<<<<<< HEAD
+=======
+			lastValidFrame = totalFrames
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 		#Walls
 		if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: 
 			die(s, score)
@@ -381,6 +407,10 @@ def aiGameRoutine( gd , ps):
 		t=f.render(str(score), True, (0, 0, 0))
 		s.blit(t, (10, 10))
 		pygame.display.update()
+<<<<<<< HEAD
+=======
+		totalFrames += 1
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 
 
 
@@ -400,14 +430,22 @@ def main():
 		gameData.font = pygame.font.SysFont('Arial', 20)
 		if gameData.playData and gameData.loadData:
 				replayRoutine( gameData )
+<<<<<<< HEAD
 		if gameData.humanTrain and gameData.loadData:
+=======
+		if gameData.humanTrain:
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 			playSnake = MLP(2, 1)
 			playSnake.add(Linear(103,1000))
 			playSnake.add(Sigmoid(1000))
 			playSnake.add(Linear(1000,4))
 			playSnake.add(Softmax(4))
 			criterion = NLLLoss(103)
+<<<<<<< HEAD
 			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
+=======
+			playSnake.train(gameData.trainData[:-1], gameData.trainTargetOutput[1:] ,  playSnake, criterion)
+>>>>>>> 98786f25d43ff127c117cc2912dbf350f46825ba
 			aiGameRoutine( gameData, playSnake)
 		else:
 			regularGameRoutine( gameData )
