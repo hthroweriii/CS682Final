@@ -1,4 +1,5 @@
 import numpy as np
+from math import log
 from sklearn import datasets 
 
 class Linear(object):
@@ -127,15 +128,18 @@ class MLP(object):
         #    return 0
         #return 1
 
-def train(playSnake, criterion):
-    for i in range(10):
-        for j in range(x_train.shape[0]):
-            prediction = playSnake.forward(x_train[j])
-            err = criterion.updateOutput(prediction, y_train[j])
-            df_do = criterion.updateGradInput(prediction, y_train[j])
+def train(trainData, targetOutput, playSnake, criterion):
+    print trainData.shape[0]
+    print trainData
+    for i in range(0,2):
+        print i
+        for j in range(trainData.shape[0]):
+            prediction = playSnake.forward(trainData[j])
+            err = criterion.updateOutput(prediction, targetOutput[j])
+            df_do = criterion.updateGradInput(prediction, targetOutput[j])
             grads = playSnake.backward(df_do)
 
             for k,m in enumerate(playSnake.modules):
                 if m.gradWeight != ():
-                    m.W -= 1e-3 * grads[k][0]
-                    m.b -= 1e-3 * grads[k][1]
+                    m.W -= 1e-4 * grads[k][0]
+                    m.b -= 1e-4 * grads[k][1]
