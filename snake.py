@@ -2,6 +2,7 @@ import pygame, random, sys, re
 import os
 from datetime import datetime
 from pygame.locals import *
+import learn_snake as ls
 
 
 class SnakeFrame:
@@ -284,7 +285,24 @@ def main():
 		gameData.img.fill((255, 0, 0))
 		gameData.font = pygame.font.SysFont('Arial', 20)
 		if gameData.playData and gameData.loadData:
-			replayRoutine( gameData )
+			if gameData.humanTrain:
+				playSnake = MLP(2, 1)
+				playSnake.add(Linear(103,1000))
+				playSnake.add(Sigmoid(1000))
+				playSnake.add(Linear(1000,4))
+				playSnake.add(Softmax(4))
+				criterion = NLLLoss(103)
+
+
+
+
+
+
+
+
+				
+			else:
+				replayRoutine( gameData )
 		else:
 			regularGameRoutine( gameData )
 
