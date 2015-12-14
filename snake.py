@@ -64,8 +64,6 @@ def interpretFromFile(filename, trainData, targetOutput):
 			tempArray += [0]
 		trainData.append(tempArray)
 		targetOutput.append(direction)
-	#print trainData
-
 	data.close()
 	#for x in frames:
 	#	tempArray = tempArray + [x]
@@ -175,6 +173,7 @@ def regularGameRoutine( gd):
 	#Training Setup
 	if gd.loadData:
 		(gd.loadedData, gd.trainData, gd.trainTargetOutput) = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
+
 	frameData = list()
 	lastValidFrame = 0
 	totalFrames = 0
@@ -295,7 +294,8 @@ def aiGameRoutine( gd , ps):
 		sys.exit(0)
 	
 	#Training Setup
-	
+	if gd.loadData:
+		gd.loadedData = interpretFromFile(gd.dataSrc, gd.trainData, gd.trainTargetOutput)
 
 	applepos = list()
 	startSquaresX = [290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310, 310,\
@@ -352,6 +352,17 @@ def aiGameRoutine( gd , ps):
 		dirs = ps.predict(np.asarray(state))
 		if abs(dirs - prevDirs) == 2:
 			dirs = prevDirs
+
+		frameData.append(SnakeFrame(xs,ys, applepos, dirs))
+		state = []
+		state += applepos + [dirs] + xs
+		for x in range(0,50-len(xs)):
+			state += [0]
+		state += xs
+		for x in range(0,50-len(ys)):
+			state += [0]
+		dirs = ps.predict(state)
+
 		i = len(xs)-1
 		while i >= 2:
 			if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):
@@ -363,6 +374,7 @@ def aiGameRoutine( gd , ps):
 			xs.append(700)
 			ys.append(700)
 			applepos=(random.randint(0,590),random.randint(0,590))
+			lastValidFrame = totalFrames
 		#Walls
 		if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: 
 			die(s, score)
@@ -382,6 +394,8 @@ def aiGameRoutine( gd , ps):
 		t=f.render(str(score), True, (0, 0, 0))
 		s.blit(t, (10, 10))
 		pygame.display.update()
+		totalFrames += 1
+
 
 
 
@@ -401,7 +415,7 @@ def main():
 		gameData.font = pygame.font.SysFont('Arial', 20)
 		if gameData.playData and gameData.loadData:
 				replayRoutine( gameData )
-		if gameData.humanTrain and gameData.loadData:
+		if gameData.humanTrain:
 			playSnake = MLP(2, 1)
 			playSnake.add(Linear(103,1000))
 			playSnake.add(Sigmoid(1000))
@@ -411,6 +425,8 @@ def main():
 			if gameData.loadData:
 				(gameData.loadedData, gameData.trainData, gameData.trainTargetOutput) = interpretFromFile(gameData.dataSrc, gameData.trainData, gameData.trainTargetOutput)
 			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
+			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
+			playSnake.train(gameData.trainData[:-1], gameData.trainTargetOutput[1:] ,  playSnake, criterion)
 			aiGameRoutine( gameData, playSnake)
 		else:
 			regularGameRoutine( gameData )
