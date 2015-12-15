@@ -24,9 +24,11 @@ class GameData:
 		self.startSquares = 5 #Starting Snake Length
 		self.loadData = False
 		self.loadedData = list()
+		self.loadWeights = False
 		self.playData = False
 		self.dataSrc = ""
 		self.customFileName = ""
+		self.weightsFileName = ""
 		self.trainData = []
 		self.trainTargetOutput = []
 
@@ -76,6 +78,7 @@ def setupCLA( gd ):
 			gd.humanTrain = True
 		elif x.lower() == "-pause":
 			gd.trainPause = True
+			gd.loadWeights = True
 		elif x.lower() == "-loaddata":
 			"What data should be loaded?: "
 			gd.dataSrc = raw_input("What data should be loaded?: ")
@@ -85,6 +88,9 @@ def setupCLA( gd ):
 		elif x[0:9].lower() == "-datasrc:":
 			gd.dataSrc = x[9:]
 			gd.loadData = True;
+		elif x[0:13].lower() == "-loadweights:":
+			gd.weightsFileName = x[13:]
+			gd.loadWeights = True
 		elif x[0:8].lower() == "-saveas:":
 			gd.customFileName = x[8:] 
 		elif x[0:9].lower() == "-squares:":
@@ -167,7 +173,6 @@ def regularGameRoutine( gd):
 			out.close()
 			print "Data Saved to: " + outName
 		pygame.time.wait(2000)
-
 		sys.exit(0)
 	
 	#Training Setup
@@ -277,7 +282,7 @@ def regularGameRoutine( gd):
 
 
 def aiGameRoutine( gd , ps):
-	def die(screen, score):
+	def die(screen, score, ps, save = ""):
 		#Declare Variables
 		f=pygame.font.SysFont('Arial', 30)
 		t=f.render('Your score was: '+str(score), True, (0, 0, 0))
@@ -290,6 +295,8 @@ def aiGameRoutine( gd , ps):
 		#write weights to file
 
 		pygame.time.wait(2000)
+		if save != "":
+			writeWeights(ps, save)
 
 		sys.exit(0)
 	
@@ -356,7 +363,7 @@ def aiGameRoutine( gd , ps):
 		i = len(xs)-1
 		while i >= 2:
 			if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):
-				die(s, score)
+				die(s, score, ps, gd.customFileName)
 			i-= 1
 		#Apple Collision
 		if collide(xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10):
@@ -364,10 +371,9 @@ def aiGameRoutine( gd , ps):
 			xs.append(700)
 			ys.append(700)
 			applepos=(random.randint(0,590),random.randint(0,590))
-			lastValidFrame = totalFrames
 		#Walls
 		if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: 
-			die(s, score)
+			die(s, score, ps, gd.customFileName)
 		i = len(xs)-1
 		while i >= 1:
 			xs[i] = xs[i-1]
@@ -385,6 +391,65 @@ def aiGameRoutine( gd , ps):
 		s.blit(t, (10, 10))
 		pygame.display.update()
 
+
+def writeWeights(pSnake, name):
+	out = open(enumFileName(name), 'w')
+	out.write("LinMod: ")
+	for x in pSnake.modules:
+		if isinstance(x,Linear):
+			wY = x.W.shape[0]
+			wX = x.W[0].shape[0]
+			wB = len(x.b)
+			out.write( str(wX) + " " )
+			out.write( str(wY) + " " )
+			out.write( str(wB) + "\n")
+			for i in range(wY):
+				for j in range(wX):
+					out.write(str(x.W[i][j]) + " " )
+			out.write("\n")
+			for i in range(wB):
+				out.write(str(x.b[i]) + " " )
+			out.write("\n")
+			out.write("LinMod: ")
+
+	out.close()
+
+def loadWeights(pSnake, name):
+	data = open(name, 'r')
+	mode = 0
+	sizes = []
+	sizeInd = 0
+	tempW = np.asarray([])
+	tempB = np.asarray([])
+	for line in data:
+		mode += 1
+		for s in line.split(' '):
+			if s == "LinMod:":
+				if len(sizes) > 0:
+					tempW = np.reshape(tempW, ( sizes[sizeInd+1] , sizes[sizeInd] ) )
+					tempLin = Linear( sizes[sizeInd+1], sizes[sizeInd] )
+					tempLin.W = np.copy(tempW)
+					tempLin.b = np.copy(tempB)
+					#print tempW
+					#print tempB
+					tempW = np.asarray([])
+					tempB = np.asarray([])
+					pSnake.add( tempLin )
+					if len(sizes) < 4:
+						pSnake.add( Sigmoid( sizes[sizeInd + 2]   ) )
+					sizeInd += 3
+				mode = 0
+				continue
+			if s == "\n" or s == "":
+				continue
+			if mode == 0:
+				num = int(s)
+				sizes.append(num)
+			if mode == 1:
+				tempW = np.append(tempW, float(s) )
+			if mode == 2:
+				tempB= np.append(tempB, float(s) )
+	pSnake.add( Softmax(sizes[-1]) )
 
 
 
@@ -404,16 +469,22 @@ def main():
 		gameData.font = pygame.font.SysFont('Arial', 20)
 		if gameData.playData and gameData.loadData:
 				replayRoutine( gameData )
-		if gameData.humanTrain:
-			playSnake = MLP(2, 1)
-			playSnake.add(Linear(103,1000))
-			playSnake.add(Sigmoid(1000))
-			playSnake.add(Linear(1000,4))
-			playSnake.add(Softmax(4))
-			criterion = NLLLoss(103)
-			if gameData.loadData:
-				(gameData.loadedData, gameData.trainData, gameData.trainTargetOutput) = interpretFromFile(gameData.dataSrc, gameData.trainData, gameData.trainTargetOutput)
-			train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
+		if gameData.humanTrain and not gameData.trainPause:
+			if gameData.loadWeights:
+				playSnake = MLP(2, 1)
+				loadWeights(playSnake,gameData.weightsFileName)
+				criterion = NLLLoss(103)
+			else:
+				playSnake = MLP(2, 1)
+				playSnake.add(Linear(103,1000))
+				playSnake.add(Sigmoid(1000))
+				playSnake.add(Linear(1000,4))
+				playSnake.add(Softmax(4))
+				criterion = MSELoss(103)
+				if gameData.loadData:
+					(gameData.loadedData, gameData.trainData, gameData.trainTargetOutput) = interpretFromFile(gameData.dataSrc, gameData.trainData, gameData.trainTargetOutput)
+				train(np.asarray(gameData.trainData[:-1]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
+				
 			aiGameRoutine( gameData, playSnake)
 		else:
 			regularGameRoutine( gameData )
