@@ -2,6 +2,7 @@ import numpy as np
 from math import log
 from sklearn import datasets 
 
+
 class Linear(object):
     def __init__(self, n_in, n_out):
         self.W = np.random.randn(n_out, n_in)
@@ -116,6 +117,7 @@ class MLP(object):
         return self.output
     
     def backward(self, gradOutput):
+        self.gradients = []
         for m in reversed(self.modules):
             self.gradients.insert(0, m.updateGradWeight(gradOutput))
             gradOutput = m.updateGradInput(gradOutput)
@@ -129,9 +131,12 @@ class MLP(object):
         #return 1
 
 def train(trainData, targetOutput, playSnake, criterion):
-    print trainData.shape[0]
-    print trainData
-    for i in range(0,2):
+    #Debugging Memory Leaks
+    #from pympler import muppy
+    #from pympler import summary
+    #from pympler import tracker
+
+    for i in range(0,50):
         print i
         for j in range(trainData.shape[0]):
             prediction = playSnake.forward(trainData[j])
@@ -141,5 +146,6 @@ def train(trainData, targetOutput, playSnake, criterion):
 
             for k,m in enumerate(playSnake.modules):
                 if m.gradWeight != ():
-                    m.W -= 1e-4 * grads[k][0]
-                    m.b -= 1e-4 * grads[k][1]
+                    m.W -= 1e-7 * grads[k][0] 
+                    m.b -= 1e-7 * grads[k][1]
+        print err
