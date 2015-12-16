@@ -136,7 +136,7 @@ def train(trainData, targetOutput, playSnake, criterion):
     #from pympler import summary
     #from pympler import tracker
 
-    for i in range(0,50):
+    for i in range(0,100):
         print i
         for j in range(trainData.shape[0]):
             prediction = playSnake.forward(trainData[j])
