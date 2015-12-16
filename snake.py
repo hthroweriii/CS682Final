@@ -331,7 +331,7 @@ def aiGameRoutine( gd , ps):
     dirs = ps.predict(np.asarray(state))
     if abs(dirs - prevDirs) == 2:
       dirs = prevDirs
-    
+
     i = len(xs)-1
     while i >= 2:
       if collide(xs[0], xs[i], ys[0], ys[i], 20, 20, 20, 20):
@@ -395,7 +395,7 @@ def main():
         playSnake.add(Sigmoid(gameData.lin1N))
         playSnake.add(Linear(gameData.lin1N,gameData.lin2N))
         playSnake.add(Softmax(gameData.lin2N))
-        criterion = MSELoss(gameData.lin1M)
+        criterion = NLLLoss(gameData.lin1M)
         train(np.asarray(gameData.trainData[:-2]), np.asarray(gameData.trainTargetOutput[1:]) ,  playSnake, criterion)
         print "Done Training"
         if gameData.customFileName != "":
