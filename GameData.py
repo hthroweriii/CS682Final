@@ -14,8 +14,8 @@ class GameData(object):
         self.trainData = []
         self.trainTargetOutput = []
         ''' Training Module Specific'''
-        self.lin1M =  103 #ignore
-        self.lin1N = 250 #hidden variables
+        self.lin1M =  103
+        self.lin1N = 600
         self.lin2N = 4
         self.maxTrainPadding = 50
         self.TMSlope = True
