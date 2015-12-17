@@ -14,13 +14,14 @@ class GameData(object):
         self.trainData = []
         self.trainTargetOutput = []
         ''' Training Module Specific'''
-        self.lin1M =  103
-        self.lin1N = 2000
+        self.lin1M =  103 #ignore
+        self.lin1N = 250 #hidden variables
         self.lin2N = 4
         self.maxTrainPadding = 50
         self.TMSlope = True
 
-
+#python snake.py -train -slope -maxtrainsize:8 -dataSrc:./MasterTrain/MasterCombo3 -saveas:lolweights
+#python snake.py -train -pause -saveas:atrain
     '''
     Interpret Command Line Arguments
     '''  
