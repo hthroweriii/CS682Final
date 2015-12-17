@@ -306,6 +306,7 @@ def aiGameRoutine( gd , ps):
   pygame.display.update()
 
   while True:
+    pygame.time.wait(50)
     if gd.humanTrain and gd.trainPause:
       wait()
     events = pygame.event.get()
